@@ -214,6 +214,7 @@ export default function ApplyPage() {
                       onChange={handleTextChange} 
                       placeholder="John Doe" 
                       className="form-input" 
+                      autoComplete="off"
                       required 
                     />
                   </div>
@@ -226,6 +227,7 @@ export default function ApplyPage() {
                       onChange={handleTextChange} 
                       placeholder="john@example.com" 
                       className="form-input" 
+                      autoComplete="off"
                       required 
                     />
                   </div>
@@ -235,12 +237,13 @@ export default function ApplyPage() {
                   <div className="form-group">
                     <label>Phone Number</label>
                     <input 
-                      type="tel" 
-                      name="phone" 
+                      type="text" 
+                      name="applicant_phone" 
                       value={application.phone} 
-                      onChange={handleTextChange} 
+                      onChange={(e) => setApplication(prev => ({ ...prev, phone: e.target.value }))} 
                       placeholder="+91 9876543210" 
                       className="form-input" 
+                      autoComplete="off"
                       required 
                     />
                   </div>
@@ -253,6 +256,7 @@ export default function ApplyPage() {
                       onChange={handleTextChange} 
                       placeholder="A1234567" 
                       className="form-input" 
+                      autoComplete="off"
                       required 
                     />
                   </div>

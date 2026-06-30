@@ -85,6 +85,52 @@ export default function TrackPage() {
 
   return (
     <div style={{ paddingTop: '8rem', backgroundColor: '#f8fafc', minHeight: '100vh' }}>
+      <style>
+        {`
+          .tracker-container {
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.1);
+          }
+          .tracker-input {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            color: #0f172a;
+          }
+          .tracker-input::placeholder {
+            color: #94a3b8;
+          }
+          .tracker-label {
+            color: #64748b !important;
+          }
+          .tracker-step.active .tracker-label, .tracker-step.completed .tracker-label {
+            color: #000000 !important;
+          }
+          .tracker-date {
+            color: #0f172a !important;
+            font-weight: 600;
+          }
+          .tracker-line {
+            background: rgba(0, 0, 0, 0.1) !important;
+          }
+          .tracker-dot {
+            color: rgba(0, 0, 0, 0.2) !important;
+            border: 4px solid rgba(0, 0, 0, 0.05) !important;
+            background: #f8fafc !important;
+          }
+          .tracker-step.completed .tracker-dot {
+            background: var(--accent) !important;
+            border-color: var(--accent) !important;
+            color: #000000 !important;
+          }
+          .tracker-step.active .tracker-dot {
+            background: #ffffff !important;
+            border-color: var(--accent) !important;
+            color: #000000 !important;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3) !important;
+          }
+        `}
+      </style>
       <section className="section" style={{ padding: '4rem 0' }}>
         <div className="container">
           
@@ -117,15 +163,15 @@ export default function TrackPage() {
                   display: 'flex', 
                   justifyContent: 'space-between', 
                   alignItems: 'center',
-                  borderBottom: '1px solid rgba(255,255,255,0.1)',
+                  borderBottom: '1px solid rgba(0,0,0,0.1)',
                   paddingBottom: '1.5rem',
                   marginBottom: '2.5rem'
                 }}>
                   <div>
-                    <h3 style={{ color: '#ffffff', fontSize: '1.5rem', fontFamily: 'Outfit' }}>
+                    <h3 style={{ color: '#000000', fontSize: '1.5rem', fontFamily: 'Outfit' }}>
                       Application for {application.fullName}
                     </h3>
-                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
+                    <p style={{ color: '#333333', fontSize: '0.9rem', marginTop: '0.25rem' }}>
                       Passport No: <strong>{application.passportNumber}</strong> | Country: <strong>{application.countryName}</strong>
                     </p>
                   </div>
@@ -192,9 +238,9 @@ export default function TrackPage() {
             )}
 
             {!searched && (
-              <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', padding: '2rem 0' }}>
+              <div style={{ textAlign: 'center', color: '#64748b', padding: '2rem 0' }}>
                 <span style={{ fontSize: '3rem' }}>🔍</span>
-                <p style={{ marginTop: '1rem' }}>Enter a reference number above to check the real-time application timeline status.</p>
+                <p style={{ marginTop: '1rem', color: '#000000' }}>Enter a reference number above to check the real-time application timeline status.</p>
               </div>
             )}
 

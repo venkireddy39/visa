@@ -43,12 +43,10 @@ export default function Navbar() {
   return (
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="container nav-container">
-        
+
         <div className="nav-brand-section">
-          <Link to="/" className="logo" style={{ fontSize: '1.5rem', fontWeight: 'bold' }} onClick={handleLinkClick}>
-            <FaGlobeAmericas /> Holidays Navigator
-          </Link>
-          
+
+
           <div className="nav-guarantee-badge">
             <div className="badge-icon-wrapper">
               <FaCheckCircle className="badge-check" />
@@ -60,20 +58,29 @@ export default function Navbar() {
           </div>
         </div>
 
-        <nav>
-          <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''}`}>
-            <div className="nav-search-bar">
-              <FaSearch className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Search destination country..." 
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="nav-search-input"
-              />
+        <nav className={mobileOpen ? 'mobile-active' : ''}>
+          {location.pathname === '/' && (
+            <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''}`}>
+              <div className="nav-search-bar">
+                <FaSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search destination country..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="nav-search-input"
+                  autoComplete="off"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </nav>
+
+        <div className="nav-logo-right">
+          <Link to="/" onClick={handleLinkClick}>
+            <img src="/images/logo.png" alt="Holidays Navigator Logo" className="nav-logo-img" />
+          </Link>
+        </div>
 
         <button className="nav-toggle" onClick={() => setMobileOpen(!mobileOpen)}>
           {mobileOpen ? <FaTimes /> : <FaBars />}
