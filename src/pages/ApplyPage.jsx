@@ -1,47 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { destinations, allCountries } from '../data/destinations';
-import { FaPassport, FaUser, FaFolderOpen, FaCreditCard, FaCheckCircle, FaTrashAlt, FaCloudUploadAlt } from 'react-icons/fa';
+import {
+  FaPassport, FaUser, FaFolderOpen, FaCreditCard, FaCheckCircle,
+  FaTrashAlt, FaCloudUploadAlt, FaGlobe, FaShieldAlt, FaClock,
+  FaArrowRight, FaArrowLeft, FaLock, FaFileAlt
+} from 'react-icons/fa';
 import FaqSection from '../components/FaqSection';
+
+const STEPS = [
+  { id: 1, icon: FaGlobe,       label: 'Destination' },
+  { id: 2, icon: FaUser,        label: 'Personal Info' },
+  { id: 3, icon: FaFolderOpen,  label: 'Documents' },
+  { id: 4, icon: FaCreditCard,  label: 'Payment' },
+];
 
 export default function ApplyPage() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const queryCountry = searchParams.get('country') || '';
-  const queryType = searchParams.get('type') || 'tourist';
+  const queryType    = searchParams.get('type') || 'tourist';
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting,  setSubmitting]  = useState(false);
   const [successData, setSuccessData] = useState(null);
 
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  // Form states
   const [application, setApplication] = useState({
-    countryId: queryCountry,
-    visaType: queryType,
-    fullName: '',
-    email: '',
-    phone: '',
-    passportNumber: '',
-    passportExpiry: '',
-    travelDate: '',
-    durationDays: '30',
+    countryId:         queryCountry,
+    visaType:          queryType,
+    fullName:          '',
+    email:             '',
+    phone:             '',
+    passportNumber:    '',
+    passportExpiry:    '',
+    travelDate:        '',
+    durationDays:      '30',
     additionalDetails: ''
   });
 
   const [uploadedDocs, setUploadedDocs] = useState([]);
 
   useEffect(() => {
-    if (queryCountry) {
-      setApplication(prev => ({ ...prev, countryId: queryCountry }));
-    }
+    if (queryCountry) setApplication(prev => ({ ...prev, countryId: queryCountry }));
   }, [queryCountry]);
 
-  const selectedCountry = destinations.find(d => d.id === application.countryId);
+  const selectedCountry      = destinations.find(d => d.id === application.countryId);
   const selectedCountryBasic = allCountries.find(c => c.id === application.countryId);
 
   const handleTextChange = (e) => {
@@ -73,48 +79,38 @@ export default function ApplyPage() {
       return;
     }
     if (currentStep === 3 && uploadedDocs.length === 0) {
-      alert('Please upload at least one supporting document (e.g. passport copy).');
+      alert('Please upload at least one supporting document.');
       return;
     }
     setCurrentStep(prev => prev + 1);
   };
 
-  const handlePrevStep = () => {
-    setCurrentStep(prev => prev - 1);
-  };
+  const handlePrevStep = () => setCurrentStep(prev => prev - 1);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
 
     const trackingId = 'VV-' + Math.floor(100000 + Math.random() * 900000);
-    const finalData = {
+    const finalData  = {
       ...application,
       trackingId,
-      status: 'SUBMITTED',
+      status:         'SUBMITTED',
       submissionDate: new Date().toLocaleDateString(),
-      countryName: countryDisplayName
+      countryName:    countryDisplayName
     };
 
     try {
-      // Mock submit or spring boot API call
       const response = await fetch('http://localhost:8082/api/visa/submit', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(finalData),
-      }).catch(() => {
-        // Fallback for demo when backend is offline
-        return { ok: true, json: async () => finalData };
-      });
+      }).catch(() => ({ ok: true, json: async () => finalData }));
 
       if (response.ok) {
-        // Store in localStorage so tracking works in fallback mode
-        const existingApps = JSON.parse(localStorage.getItem('visa_applications') || '[]');
-        existingApps.push(finalData);
-        localStorage.setItem('visa_applications', JSON.stringify(existingApps));
-
+        const existing = JSON.parse(localStorage.getItem('visa_applications') || '[]');
+        existing.push(finalData);
+        localStorage.setItem('visa_applications', JSON.stringify(existing));
         setSuccessData(finalData);
         setCurrentStep(5);
       }
@@ -125,324 +121,393 @@ export default function ApplyPage() {
     }
   };
 
-  const visaFee = selectedCountry ? selectedCountry.startingPrice : 3500;
-  const countryDisplayName = selectedCountry ? selectedCountry.name : (selectedCountryBasic ? selectedCountryBasic.name : application.countryId.toUpperCase());
+  const visaFee          = selectedCountry ? selectedCountry.startingPrice : 3500;
+  const countryDisplayName = selectedCountry
+    ? selectedCountry.name
+    : selectedCountryBasic
+      ? selectedCountryBasic.name
+      : application.countryId.toUpperCase();
   const serviceFee = 950;
-  const gst = Math.round((visaFee + serviceFee) * 0.18);
+  const gst        = Math.round((visaFee + serviceFee) * 0.18);
   const totalAmount = visaFee + serviceFee + gst;
 
-  return (
-    <div className="apply-page-container">
-      <div className="container">
-        
-        <div className="wizard-card">
-          <div className="wizard-header">
-            <h2 style={{ color: '#ffffff', fontFamily: 'Outfit' }}>Visa Application</h2>
-            
-            <div className="wizard-steps-indicator">
-              <span className={`wizard-step-bullet ${currentStep === 1 ? 'active' : ''} ${currentStep > 1 ? 'completed' : ''}`}>1</span>
-              <span className={`wizard-step-bullet ${currentStep === 2 ? 'active' : ''} ${currentStep > 2 ? 'completed' : ''}`}>2</span>
-              <span className={`wizard-step-bullet ${currentStep === 3 ? 'active' : ''} ${currentStep > 3 ? 'completed' : ''}`}>3</span>
-              <span className={`wizard-step-bullet ${currentStep === 4 ? 'active' : ''} ${currentStep > 4 ? 'completed' : ''}`}>4</span>
+  /* ── Success Screen ── */
+  if (currentStep === 5 && successData) {
+    return (
+      <div className="apply-page-container">
+        <div className="apply-success-wrap">
+          <div className="apply-success-card">
+            <div className="success-icon-ring">
+              <FaCheckCircle />
+            </div>
+            <h2>Application Submitted!</h2>
+            <p className="success-subtitle">
+              Your visa application for <strong>{successData.countryName}</strong> has been received successfully.
+            </p>
+            <div className="success-details-box">
+              <div className="success-detail-row">
+                <span>Tracking ID</span>
+                <strong className="tracking-id-highlight">{successData.trackingId}</strong>
+              </div>
+              <div className="success-detail-row">
+                <span>Applicant</span>
+                <strong>{successData.fullName}</strong>
+              </div>
+              <div className="success-detail-row">
+                <span>Submitted On</span>
+                <strong>{successData.submissionDate}</strong>
+              </div>
+              <div className="success-detail-row">
+                <span>Status</span>
+                <span className="status-badge submitted">SUBMITTED</span>
+              </div>
+            </div>
+            <div className="success-actions">
+              <button onClick={() => navigate(`/track?id=${successData.trackingId}`)} className="btn btn-primary">
+                Track Application
+              </button>
+              <button onClick={() => navigate('/')} className="btn btn-outline-dark">
+                Back to Home
+              </button>
             </div>
           </div>
+        </div>
+        <FaqSection />
+      </div>
+    );
+  }
 
-          <div className="wizard-body">
-            
-            {/* STEP 1: Select Country & Visa */}
-            {currentStep === 1 && (
-              <div>
-                <h3 style={{ marginBottom: '1.5rem', color: '#0f172a' }}>
-                  <FaPassport style={{ color: '#d4af37', marginRight: '8px' }} /> Select Visa Destination
-                </h3>
-                
-                <div className="form-group">
-                  <label>Destination Country</label>
-                  <select 
-                    name="countryId" 
-                    value={application.countryId} 
-                    onChange={handleTextChange} 
-                    className="form-select"
-                    required
-                  >
-                    <option value="">Choose Country</option>
-                    {allCountries.map(c => (
-                      <option key={c.id} value={c.id}>{c.name} {c.flag}</option>
-                    ))}
-                  </select>
-                </div>
+  /* ── Main Wizard ── */
+  return (
+    <div className="apply-page-container">
+      <div className="apply-page-inner">
 
-                <div className="form-group">
-                  <label>Visa Category</label>
-                  <select 
-                    name="visaType" 
-                    value={application.visaType} 
-                    onChange={handleTextChange} 
-                    className="form-select"
-                  >
-                    <option value="tourist">Tourist Visa</option>
-                    <option value="business">Business Visa</option>
-                  </select>
-                </div>
+        {/* ── Left Sidebar ── */}
+        <aside className="apply-sidebar">
+          <div className="apply-sidebar-brand">
+            <img src="/images/logo.png" alt="Holidays Navigator" className="apply-sidebar-logo" />
+          </div>
 
-                {(selectedCountry || selectedCountryBasic) && (
-                  <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', marginTop: '2rem' }}>
-                    <h4 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Processing Details:</h4>
-                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>⏱ <strong>Processing Time:</strong> {selectedCountry ? selectedCountry.processingTime : '7-15 Business Days'}</p>
-                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>🛡 <strong>Success Rate:</strong> {selectedCountry ? selectedCountry.successRate : 95}% Approval Rate</p>
-                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>🌍 <strong>Region:</strong> {selectedCountryBasic ? selectedCountryBasic.continent : ''}</p>
-                    {selectedCountry && <p style={{ color: '#64748b', fontSize: '0.9rem' }}>🏷 <strong>Visa Embassy Fee:</strong> ₹{selectedCountry.startingPrice.toLocaleString('en-IN')}</p>}
+          <div className="apply-sidebar-steps">
+            {STEPS.map(step => {
+              const Icon = step.icon;
+              const isActive    = currentStep === step.id;
+              const isCompleted = currentStep > step.id;
+              return (
+                <div
+                  key={step.id}
+                  className={`apply-sidebar-step ${isActive ? 'active' : ''} ${isCompleted ? 'completed' : ''}`}
+                >
+                  <div className="apply-sidebar-step-icon">
+                    {isCompleted ? <FaCheckCircle /> : <Icon />}
                   </div>
-                )}
+                  <div className="apply-sidebar-step-info">
+                    <span className="step-num">Step {step.id}</span>
+                    <span className="step-label">{step.label}</span>
+                  </div>
+                  {step.id < STEPS.length && <div className="apply-sidebar-connector" />}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Country summary panel */}
+          {(selectedCountry || selectedCountryBasic) && (
+            <div className="apply-sidebar-summary">
+              <h4>Selected Destination</h4>
+              <p className="summary-country-name">
+                {selectedCountryBasic?.flag} {countryDisplayName}
+              </p>
+              {selectedCountry && (
+                <>
+                  <div className="summary-meta-row">
+                    <FaClock className="meta-icon" />
+                    <span>{selectedCountry.processingTime}</span>
+                  </div>
+                  <div className="summary-meta-row">
+                    <FaShieldAlt className="meta-icon" />
+                    <span>{selectedCountry.successRate}% Approval Rate</span>
+                  </div>
+                  <div className="summary-price-badge">
+                    ₹{visaFee.toLocaleString('en-IN')} <span>Embassy Fee</span>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+
+          <div className="apply-sidebar-trust">
+            <FaLock className="trust-icon" /> SSL Secured &amp; 100% Confidential
+          </div>
+        </aside>
+
+        {/* ── Right Form Panel ── */}
+        <main className="apply-form-panel">
+
+          {/* Step Header */}
+          <div className="apply-form-header">
+            <div className="apply-step-label-row">
+              <span className="apply-step-chip">Step {currentStep} of 4</span>
+              <div className="apply-progress-bar">
+                <div
+                  className="apply-progress-fill"
+                  style={{ width: `${(currentStep / 4) * 100}%` }}
+                />
               </div>
-            )}
+            </div>
+            <h2 className="apply-form-title">
+              {currentStep === 1 && 'Select Your Destination'}
+              {currentStep === 2 && 'Personal & Passport Details'}
+              {currentStep === 3 && 'Upload Documents'}
+              {currentStep === 4 && 'Review & Confirm Payment'}
+            </h2>
+            <p className="apply-form-subtitle">
+              {currentStep === 1 && 'Choose the country you wish to visit and the type of visa required.'}
+              {currentStep === 2 && 'Provide your personal details exactly as they appear on your passport.'}
+              {currentStep === 3 && 'Upload clear scanned copies of your passport and photographs.'}
+              {currentStep === 4 && 'Review your details and complete the secure payment to submit.'}
+            </p>
+          </div>
 
-            {/* STEP 2: Personal Details */}
-            {currentStep === 2 && (
-              <div>
-                <h3 style={{ marginBottom: '1.5rem', color: '#0f172a' }}>
-                  <FaUser style={{ color: '#d4af37', marginRight: '8px' }} /> Personal & Passport Details
-                </h3>
+          {/* ── STEP 1 ── */}
+          {currentStep === 1 && (
+            <div className="apply-step-content">
+              <div className="apply-form-group">
+                <label className="apply-form-label">
+                  <FaGlobe className="label-icon" /> Destination Country <span className="required">*</span>
+                </label>
+                <select
+                  name="countryId"
+                  value={application.countryId}
+                  onChange={handleTextChange}
+                  className="apply-form-select"
+                  required
+                >
+                  <option value="">— Choose a Country —</option>
+                  {allCountries.map(c => (
+                    <option key={c.id} value={c.id}>{c.flag} {c.name}</option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="form-grid-row">
-                  <div className="form-group">
-                    <label>Full Name (As in Passport)</label>
-                    <input 
-                      type="text" 
-                      name="fullName" 
-                      value={application.fullName} 
-                      onChange={handleTextChange} 
-                      placeholder="John Doe" 
-                      className="form-input" 
-                      autoComplete="off"
-                      required 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Email Address</label>
-                    <input 
-                      type="email" 
-                      name="email" 
-                      value={application.email} 
-                      onChange={handleTextChange} 
-                      placeholder="john@example.com" 
-                      className="form-input" 
-                      autoComplete="off"
-                      required 
-                    />
-                  </div>
-                </div>
-
-                <div className="form-grid-row">
-                  <div className="form-group">
-                    <label>Phone Number</label>
-                    <input 
-                      type="text" 
-                      name="applicant_phone" 
-                      value={application.phone} 
-                      onChange={(e) => setApplication(prev => ({ ...prev, phone: e.target.value }))} 
-                      placeholder="+91 9876543210" 
-                      className="form-input" 
-                      autoComplete="off"
-                      required 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Passport Number</label>
-                    <input 
-                      type="text" 
-                      name="passportNumber" 
-                      value={application.passportNumber} 
-                      onChange={handleTextChange} 
-                      placeholder="A1234567" 
-                      className="form-input" 
-                      autoComplete="off"
-                      required 
-                    />
-                  </div>
-                </div>
-
-                <div className="form-grid-row">
-                  <div className="form-group">
-                    <label>Passport Expiry Date</label>
-                    <input 
-                      type="date" 
-                      name="passportExpiry" 
-                      value={application.passportExpiry} 
-                      onChange={handleTextChange} 
-                      className="form-input" 
-                      required 
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Planned Date of Travel</label>
-                    <input 
-                      type="date" 
-                      name="travelDate" 
-                      value={application.travelDate} 
-                      onChange={handleTextChange} 
-                      className="form-input" 
-                      required 
-                    />
-                  </div>
+              <div className="apply-form-group">
+                <label className="apply-form-label">
+                  <FaPassport className="label-icon" /> Visa Category <span className="required">*</span>
+                </label>
+                <div className="apply-visa-type-grid">
+                  {['tourist', 'business'].map(type => (
+                    <label
+                      key={type}
+                      className={`visa-type-card ${application.visaType === type ? 'selected' : ''}`}
+                    >
+                      <input
+                        type="radio"
+                        name="visaType"
+                        value={type}
+                        checked={application.visaType === type}
+                        onChange={handleTextChange}
+                        style={{ display: 'none' }}
+                      />
+                      <span className="visa-type-icon">{type === 'tourist' ? '🏖️' : '💼'}</span>
+                      <span className="visa-type-name">
+                        {type === 'tourist' ? 'Tourist Visa' : 'Business Visa'}
+                      </span>
+                      <span className="visa-type-desc">
+                        {type === 'tourist'
+                          ? 'Leisure, tourism & family visits'
+                          : 'Meetings, conferences & trade'}
+                      </span>
+                      {application.visaType === type && (
+                        <FaCheckCircle className="visa-type-check" />
+                      )}
+                    </label>
+                  ))}
                 </div>
               </div>
-            )}
+            </div>
+          )}
 
-            {/* STEP 3: Upload Documents */}
-            {currentStep === 3 && (
-              <div>
-                <h3 style={{ marginBottom: '1.5rem', color: '#0f172a' }}>
-                  <FaFolderOpen style={{ color: '#d4af37', marginRight: '8px' }} /> Upload Required Documents
-                </h3>
-                <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
-                  Please upload copies of: <strong>Passport Front Page</strong>, <strong>Passport Back Page</strong>, and <strong>Recent Passport Photograph</strong>.
-                </p>
-
-                <div className="doc-upload-box" onClick={() => document.getElementById('file-upload-input').click()}>
-                  <FaCloudUploadAlt className="doc-upload-icon" />
-                  <h4 style={{ color: '#0f172a' }}>Drag and Drop Files Here</h4>
-                  <p style={{ color: '#64748b', fontSize: '0.85rem', marginTop: '0.25rem' }}>or click to browse from files (Max 5MB per file)</p>
-                  <input 
-                    type="file" 
-                    id="file-upload-input" 
-                    style={{ display: 'none' }} 
-                    multiple 
-                    onChange={handleDocUpload} 
+          {/* ── STEP 2 ── */}
+          {currentStep === 2 && (
+            <div className="apply-step-content">
+              <div className="apply-form-row">
+                <div className="apply-form-group">
+                  <label className="apply-form-label">Full Name (as in passport) <span className="required">*</span></label>
+                  <input
+                    type="text" name="fullName" value={application.fullName}
+                    onChange={handleTextChange} placeholder="e.g. Rahul Sharma"
+                    className="apply-form-input" autoComplete="off" required
                   />
                 </div>
-
-                {uploadedDocs.length > 0 && (
-                  <div className="uploaded-docs-list">
-                    <h4 style={{ color: '#0f172a', marginBottom: '1rem' }}>Uploaded Documents ({uploadedDocs.length}):</h4>
-                    {uploadedDocs.map((doc, idx) => (
-                      <div key={idx} className="uploaded-doc-item">
-                        <span>📄 <strong>{doc.name}</strong> ({doc.size})</span>
-                        <button type="button" onClick={() => removeDoc(idx)} className="remove-doc-btn">
-                          <FaTrashAlt /> Remove
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <div className="apply-form-group">
+                  <label className="apply-form-label">Email Address <span className="required">*</span></label>
+                  <input
+                    type="email" name="email" value={application.email}
+                    onChange={handleTextChange} placeholder="rahul@example.com"
+                    className="apply-form-input" autoComplete="off" required
+                  />
+                </div>
               </div>
-            )}
 
-            {/* STEP 4: Review & Payment */}
-            {currentStep === 4 && (
-              <div>
-                <h3 style={{ marginBottom: '1.5rem', color: '#0f172a' }}>
-                  <FaCreditCard style={{ color: '#d4af37', marginRight: '8px' }} /> Review & Secure Payment
-                </h3>
+              <div className="apply-form-row">
+                <div className="apply-form-group">
+                  <label className="apply-form-label">Phone Number <span className="required">*</span></label>
+                  <input
+                    type="text" name="applicant_phone" value={application.phone}
+                    onChange={(e) => setApplication(prev => ({ ...prev, phone: e.target.value }))}
+                    placeholder="+91 98765 43210"
+                    className="apply-form-input" autoComplete="off" required
+                  />
+                </div>
+                <div className="apply-form-group">
+                  <label className="apply-form-label">Passport Number <span className="required">*</span></label>
+                  <input
+                    type="text" name="passportNumber" value={application.passportNumber}
+                    onChange={handleTextChange} placeholder="A1234567"
+                    className="apply-form-input" autoComplete="off" required
+                  />
+                </div>
+              </div>
 
-                <div className="payment-summary">
-                  <h4 style={{ color: '#0f172a', marginBottom: '1rem' }}>Pricing Summary:</h4>
-                  <div className="summary-row">
+              <div className="apply-form-row">
+                <div className="apply-form-group">
+                  <label className="apply-form-label">Passport Expiry Date <span className="required">*</span></label>
+                  <input
+                    type="date" name="passportExpiry" value={application.passportExpiry}
+                    onChange={handleTextChange} className="apply-form-input" required
+                  />
+                </div>
+                <div className="apply-form-group">
+                  <label className="apply-form-label">Planned Travel Date <span className="required">*</span></label>
+                  <input
+                    type="date" name="travelDate" value={application.travelDate}
+                    onChange={handleTextChange} className="apply-form-input" required
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── STEP 3 ── */}
+          {currentStep === 3 && (
+            <div className="apply-step-content">
+              <div className="apply-doc-checklist">
+                {['Passport Front Page', 'Passport Back Page', 'Recent Passport Photo'].map((item, i) => (
+                  <div key={i} className="doc-checklist-item">
+                    <FaFileAlt className="doc-checklist-icon" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div
+                className="apply-upload-zone"
+                onClick={() => document.getElementById('file-upload-input').click()}
+              >
+                <FaCloudUploadAlt className="upload-zone-icon" />
+                <h4>Drag &amp; Drop or Click to Upload</h4>
+                <p>PDF, JPG, PNG accepted · Max 5MB per file</p>
+                <input
+                  type="file" id="file-upload-input"
+                  style={{ display: 'none' }} multiple onChange={handleDocUpload}
+                />
+                <button type="button" className="upload-zone-btn">Browse Files</button>
+              </div>
+
+              {uploadedDocs.length > 0 && (
+                <div className="apply-uploaded-list">
+                  <h4>Uploaded ({uploadedDocs.length})</h4>
+                  {uploadedDocs.map((doc, idx) => (
+                    <div key={idx} className="apply-uploaded-item">
+                      <div className="uploaded-item-info">
+                        <FaFileAlt className="uploaded-file-icon" />
+                        <div>
+                          <strong>{doc.name}</strong>
+                          <span>{doc.size}</span>
+                        </div>
+                      </div>
+                      <button type="button" onClick={() => removeDoc(idx)} className="uploaded-remove-btn">
+                        <FaTrashAlt />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* ── STEP 4 ── */}
+          {currentStep === 4 && (
+            <div className="apply-step-content">
+              <div className="apply-review-grid">
+                {/* Left: Applicant Summary */}
+                <div className="review-info-card">
+                  <h4>Applicant Details</h4>
+                  <div className="review-detail-row"><span>Name</span><strong>{application.fullName || '—'}</strong></div>
+                  <div className="review-detail-row"><span>Email</span><strong>{application.email || '—'}</strong></div>
+                  <div className="review-detail-row"><span>Phone</span><strong>{application.phone || '—'}</strong></div>
+                  <div className="review-detail-row"><span>Passport No.</span><strong>{application.passportNumber || '—'}</strong></div>
+                  <div className="review-detail-row"><span>Travel Date</span><strong>{application.travelDate || '—'}</strong></div>
+                  <div className="review-detail-row"><span>Destination</span><strong>{countryDisplayName}</strong></div>
+                  <div className="review-detail-row"><span>Visa Type</span><strong style={{ textTransform: 'capitalize' }}>{application.visaType}</strong></div>
+                </div>
+
+                {/* Right: Payment Summary */}
+                <div className="review-payment-card">
+                  <h4>Fee Breakdown</h4>
+                  <div className="payment-fee-row">
                     <span>{countryDisplayName} Embassy Fee</span>
                     <span>₹{visaFee.toLocaleString('en-IN')}</span>
                   </div>
-                  <div className="summary-row">
-                    <span>Holidays Navigator Service Fee</span>
+                  <div className="payment-fee-row">
+                    <span>Service Fee</span>
                     <span>₹{serviceFee.toLocaleString('en-IN')}</span>
                   </div>
-                  <div className="summary-row">
+                  <div className="payment-fee-row">
                     <span>GST (18%)</span>
                     <span>₹{gst.toLocaleString('en-IN')}</span>
                   </div>
-                  <div className="summary-row total">
-                    <span>Total Amount Payable</span>
-                    <span>₹{totalAmount.toLocaleString('en-IN')}</span>
+                  <div className="payment-fee-total">
+                    <span>Total Payable</span>
+                    <strong>₹{totalAmount.toLocaleString('en-IN')}</strong>
                   </div>
-                </div>
 
-                <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', marginBottom: '1.5rem' }}>
-                  <h4 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Secure Checkout Portal</h4>
-                  <p style={{ color: '#64748b', fontSize: '0.85rem' }}>
-                    Payments are encrypted using secure 256-bit SSL connection. We accept all major cards, Netbanking, UPI, and wallets.
-                  </p>
-                </div>
+                  <div className="payment-secure-notice">
+                    <FaLock className="secure-lock-icon" />
+                    <p>256-bit SSL encrypted · All major cards, UPI &amp; Netbanking accepted</p>
+                  </div>
 
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <button 
-                    onClick={handleFormSubmit} 
-                    className="btn btn-accent" 
-                    style={{ width: '100%', padding: '1rem 2rem', fontSize: '1.1rem' }}
+                  <button
+                    onClick={handleFormSubmit}
+                    className="apply-pay-btn"
                     disabled={submitting}
                   >
-                    {submitting ? 'Processing Payment & Submitting...' : `Pay ₹${totalAmount.toLocaleString('en-IN')} & Submit`}
+                    {submitting ? 'Processing…' : `Pay ₹${totalAmount.toLocaleString('en-IN')} & Submit`}
+                    {!submitting && <FaArrowRight style={{ marginLeft: '8px' }} />}
                   </button>
                 </div>
               </div>
-            )}
-
-            {/* STEP 5: Success Screen */}
-            {currentStep === 5 && successData && (
-              <div style={{ textAlign: 'center', padding: '3rem 0' }}>
-                <span style={{ fontSize: '4.5rem', color: '#16a34a', display: 'block', marginBottom: '1.5rem' }}><FaCheckCircle /></span>
-                <h2 style={{ color: '#0f172a', fontSize: '2.25rem', fontFamily: 'Outfit' }}>Application Submitted!</h2>
-                <p style={{ color: '#64748b', fontSize: '1.1rem', marginTop: '0.5rem', marginBottom: '2.5rem' }}>
-                  Thank you! Your application for <strong>{successData.countryName}</strong> Visa has been received successfully.
-                </p>
-
-                <div style={{ 
-                  background: '#f8fafc', 
-                  maxWidth: '500px', 
-                  margin: '0 auto 2.5rem auto', 
-                  padding: '1.5rem 2.5rem', 
-                  borderRadius: '16px',
-                  textAlign: 'left'
-                }}>
-                  <p style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #e2e8f0' }}>
-                    <span>Tracking ID:</span>
-                    <strong style={{ color: '#d4af37', fontSize: '1.1rem' }}>{successData.trackingId}</strong>
-                  </p>
-                  <p style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0', borderBottom: '1px solid #e2e8f0' }}>
-                    <span>Applicant Name:</span>
-                    <strong>{successData.fullName}</strong>
-                  </p>
-                  <p style={{ display: 'flex', justifyContent: 'space-between', padding: '0.5rem 0' }}>
-                    <span>Status:</span>
-                    <span className="status-badge submitted">SUBMITTED</span>
-                  </p>
-                </div>
-
-                <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-                  <button onClick={() => navigate(`/track?id=${successData.trackingId}`)} className="btn btn-primary">
-                    Track Application Status
-                  </button>
-                  <button onClick={() => navigate('/')} className="btn btn-outline-dark">
-                    Back to Home
-                  </button>
-                </div>
-              </div>
-            )}
-
-          </div>
-
-          {currentStep < 5 && (
-            <div className="wizard-footer">
-              <button 
-                type="button" 
-                onClick={handlePrevStep} 
-                className="btn btn-outline-dark"
-                disabled={currentStep === 1}
-                style={{ visibility: currentStep === 1 ? 'hidden' : 'visible' }}
-              >
-                Previous Step
-              </button>
-              
-              <button 
-                type="button" 
-                onClick={handleNextStep} 
-                className="btn btn-primary"
-                style={{ display: currentStep === 4 ? 'none' : 'block' }}
-              >
-                Next Step
-              </button>
             </div>
           )}
-        </div>
 
+          {/* ── Footer Nav ── */}
+          {currentStep < 5 && (
+            <div className="apply-form-footer">
+              <button
+                type="button" onClick={handlePrevStep}
+                className="apply-nav-btn prev"
+                style={{ visibility: currentStep === 1 ? 'hidden' : 'visible' }}
+              >
+                <FaArrowLeft style={{ marginRight: '6px' }} /> Previous
+              </button>
+              {currentStep < 4 && (
+                <button type="button" onClick={handleNextStep} className="apply-nav-btn next">
+                  Continue <FaArrowRight style={{ marginLeft: '6px' }} />
+                </button>
+              )}
+            </div>
+          )}
+        </main>
       </div>
       <FaqSection />
     </div>
