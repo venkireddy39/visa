@@ -42,7 +42,6 @@ export default function PopularDestinations() {
                 src={country.image}
                 alt={`${country.name} visa destination`}
                 className="pop-card-img"
-                loading="lazy"
               />
 
               {/* Always visible: name at bottom */}
