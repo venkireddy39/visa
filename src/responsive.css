@@ -56,57 +56,29 @@ body {
 @media (max-width: 1024px) {
   .nav-container {
     display: flex !important;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
   }
 
-  /* Hide logo on tablet/mobile (it goes into dropdown) */
+  /* Show logo and center it on tablet/mobile */
   .nav-logo-right {
+    display: flex;
+    justify-self: center;
+    margin: 0 auto;
+  }
+
+  /* Hide hamburger menu toggle */
+  .nav-toggle {
     display: none;
   }
 
-  .nav-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: transparent;
-    border: 1.5px solid #e2e8f0;
-    border-radius: 10px;
-    color: var(--primary);
-    font-size: 1.1rem;
-    cursor: pointer;
-    flex-shrink: 0;
+  /* Show nav on homepage for the bottom search bar */
+  body.has-bottom-search nav {
+    display: block;
   }
 
-  /* Hide desktop nav, only show when mobile-active */
   nav {
     display: none;
-  }
-
-  nav.mobile-active {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: #ffffff;
-    padding: 5rem 2rem 2rem;
-    z-index: 998;
-    overflow-y: auto;
-    gap: 1rem;
-  }
-
-  .nav-search-container.mobile-open {
-    display: flex !important;
-    width: 100%;
-  }
-
-  .nav-search-bar {
-    width: 100% !important;
   }
 }
 
@@ -774,5 +746,114 @@ body {
   * {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ══════════════════════════════════════════
+   POPULAR DESTINATIONS RESPONSIVE LAYOUT
+   ══════════════════════════════════════════ */
+/* Desktop (1440px and above) */
+@media (min-width: 1440px) {
+  .pop-dest-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+}
+
+/* Laptop (1024px to 1439px) */
+@media (min-width: 1024px) and (max-width: 1439.98px) {
+  .pop-dest-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+
+/* Tablet (768px to 1023px) */
+@media (min-width: 768px) and (max-width: 1023.98px) {
+  .pop-dest-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+
+/* Mobile (below 768px) */
+@media (max-width: 767.98px) {
+  .pop-dest-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  .pop-dest-card {
+    height: 280px !important;
+  }
+
+  .pop-card-hover-content {
+    padding: 0.85rem !important;
+  }
+
+  .pop-card-base-info {
+    padding: 0.85rem !important;
+  }
+
+  .pop-card-name {
+    font-size: 0.95rem !important;
+  }
+
+  .pop-card-hover-name {
+    font-size: 1.1rem !important;
+    margin-bottom: 0.35rem !important;
+  }
+
+  .pop-card-region-tag {
+    padding: 0.15rem 0.5rem !important;
+    font-size: 0.65rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .pop-card-apply-btn {
+    padding: 0.5rem 0.75rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 8px !important;
+  }
+}
+
+/* ══════════════════════════════════════════
+   MOBILE & TABLET BOTTOM FIXED SEARCH BAR
+   ══════════════════════════════════════════ */
+@media (max-width: 1023.98px) {
+  /* Show nav search container fixed at bottom on homepage */
+  .nav-search-container {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    background: var(--white) !important;
+    padding: 0.75rem 1.5rem !important;
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
+    box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.08) !important;
+    border-top-left-radius: 20px !important;
+    border-top-right-radius: 20px !important;
+    border: none !important;
+    z-index: 1000 !important;
+  }
+
+  .nav-search-bar {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    box-shadow: none !important;
+  }
+
+  /* Spacing for body and floating buttons when bottom search is active */
+  body.has-bottom-search {
+    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  body.has-bottom-search .whatsapp-float {
+    bottom: calc(4.5rem + 1.25rem + env(safe-area-inset-bottom)) !important;
+  }
+
+  body.has-bottom-search .back-to-top {
+    bottom: calc(4.5rem + 1.25rem + env(safe-area-inset-bottom)) !important;
   }
 }

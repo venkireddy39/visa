@@ -3284,10 +3284,6 @@ textarea {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  .pop-dest-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .countries-grid {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -3406,10 +3402,6 @@ textarea {
   .hero-stats-row {
     grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
-  }
-
-  .pop-dest-grid {
-    grid-template-columns: 1fr;
   }
 
   .countries-hero {

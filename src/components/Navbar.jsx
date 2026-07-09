@@ -35,6 +35,17 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (location.pathname === '/') {
+      document.body.classList.add('has-bottom-search');
+    } else {
+      document.body.classList.remove('has-bottom-search');
+    }
+    return () => {
+      document.body.classList.remove('has-bottom-search');
+    };
+  }, [location.pathname]);
+
   const handleLinkClick = () => {
     setMobileOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
