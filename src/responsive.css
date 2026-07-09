@@ -815,45 +815,126 @@ body {
 }
 
 /* ══════════════════════════════════════════
-   MOBILE & TABLET BOTTOM FIXED SEARCH BAR
+   MOBILE & TABLET — PREMIUM GLASSMORPHISM
+   FLOATING SEARCH BAR
    ══════════════════════════════════════════ */
+
+/* Fade-in animation for the floating bar */
+@keyframes floatingSearchFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
 @media (max-width: 1023.98px) {
-  /* Show nav search container fixed at bottom on homepage */
+  /* ── Outer wrapper: centered floating pill ── */
   .nav-search-container {
     display: flex !important;
     position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    background: var(--white) !important;
-    padding: 0.75rem 1.5rem !important;
-    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom)) !important;
-    box-shadow: 0 -8px 30px rgba(15, 23, 42, 0.08) !important;
-    border-top-left-radius: 20px !important;
-    border-top-right-radius: 20px !important;
+    /* Float it above the bottom edge with safe-area respect */
+    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100% - 2.5rem) !important;
+    max-width: 520px !important;
+    z-index: 1100 !important;
+    padding: 0 !important;
+    background: transparent !important;
     border: none !important;
-    z-index: 1000 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+
+    /* Fade-in on page load */
+    animation: floatingSearchFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both !important;
   }
 
+  /* ── Inner bar: glassmorphism pill ── */
   .nav-search-bar {
     width: 100% !important;
     max-width: 100% !important;
-    margin: 0 auto !important;
-    box-shadow: none !important;
+    margin: 0 !important;
+
+    /* Glassmorphism core */
+    background: rgba(255, 255, 255, 0.72) !important;
+    backdrop-filter: blur(20px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+
+    /* Soft frosted border */
+    border: 1px solid rgba(255, 255, 255, 0.45) !important;
+
+    /* Pill shape */
+    border-radius: 30px !important;
+    padding: 0.7rem 1.25rem !important;
+
+    /* Floating shadow */
+    box-shadow:
+      0 8px 32px rgba(15, 23, 42, 0.14),
+      0 2px 8px rgba(15, 23, 42, 0.08),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6) !important;
+
+    /* Smooth transitions */
+    transition:
+      box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+      border-color 0.25s ease,
+      background 0.25s ease !important;
   }
 
-  /* Spacing for body and floating buttons when bottom search is active */
+  /* ── Focus state: scale-up + stronger glow ── */
+  .nav-search-bar:focus-within {
+    transform: scale(1.025) !important;
+    background: rgba(255, 255, 255, 0.88) !important;
+    border-color: rgba(212, 175, 55, 0.55) !important;
+    box-shadow:
+      0 12px 40px rgba(15, 23, 42, 0.18),
+      0 0 0 3px rgba(212, 175, 55, 0.18),
+      0 4px 12px rgba(212, 175, 55, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  }
+
+  /* ── Search icon colour inside floating bar ── */
+  .nav-search-bar .search-icon {
+    color: var(--text-muted) !important;
+    font-size: 1rem !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* ── Input field inside floating bar ── */
+  .nav-search-bar .nav-search-input {
+    font-size: 0.95rem !important;
+    color: var(--primary) !important;
+    background: transparent !important;
+    caret-color: var(--accent) !important;
+  }
+
+  .nav-search-bar .nav-search-input::placeholder {
+    color: #94a3b8 !important;
+  }
+
+  /* ── Body bottom padding so content is never hidden under the bar ── */
   body.has-bottom-search {
-    padding-bottom: calc(4.5rem + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
   }
 
+  /* ── Lift floating action buttons above the search bar ── */
   body.has-bottom-search .whatsapp-float {
-    bottom: calc(4.5rem + 1.25rem + env(safe-area-inset-bottom)) !important;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
   }
 
   body.has-bottom-search .back-to-top {
-    bottom: calc(4.5rem + 1.25rem + env(safe-area-inset-bottom)) !important;
+    bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+  }
+}
+
+/* Extra tweak for very small phones */
+@media (max-width: 374px) {
+  .nav-search-container {
+    width: calc(100% - 1.5rem) !important;
   }
 }

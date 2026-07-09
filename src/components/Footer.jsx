@@ -11,7 +11,7 @@ export default function Footer() {
     <footer className="footer">
       <div className="container">
         <div className="footer-grid">
-          
+
           <div className="footer-brand">
             <h2 className="logo" style={{ cursor: 'pointer', fontSize: '1.5rem', fontWeight: 'bold' }} onClick={handleScrollToTop}>
               <FaGlobeAmericas /> Holidays Navigator
@@ -88,9 +88,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
         </div>
-
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} Holidays Navigator. All rights reserved.</p>
           <div className="footer-legal-links">
