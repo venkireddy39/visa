@@ -9,6 +9,8 @@ import ServicesPage from './pages/ServicesPage';
 import ApplyPage from './pages/ApplyPage';
 import TrackPage from './pages/TrackPage';
 import AdminPage from './pages/AdminPage';
+import TermsPage from './pages/TermsPage';
+import PrivacyPage from './pages/PrivacyPage';
 import WhatsAppButton from './components/WhatsAppButton';
 import BackToTop from './components/BackToTop';
 
@@ -28,6 +30,8 @@ function App() {
             <Route path="/apply" element={<ApplyPage />} />
             <Route path="/track" element={<TrackPage />} />
             <Route path="/admin" element={<AdminPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
           </Routes>
         </main>
 

@@ -20,16 +20,14 @@ export default function Footer() {
               Holidays Navigator is a premium global visa solution provider enabling hassle-free, secure, and fast visa application processing for tourist and business purposes across 100+ countries.
             </p>
             <div className="footer-social-row">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-circle-link">
+              <a href="https://www.facebook.com/share/192uudm6aB/" target="_blank" rel="noopener noreferrer" className="social-circle-link">
                 <FaFacebookF />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-circle-link">
-                <FaTwitter />
-              </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-circle-link">
+
+              <a href="https://www.linkedin.com/company/holidaysnavigator/" target="_blank" rel="noopener noreferrer" className="social-circle-link">
                 <FaLinkedinIn />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-circle-link">
+              <a href="https://www.instagram.com/holidaysnavigator?igsh=MWtuczJqenJtdGN2ZA==" target="_blank" rel="noopener noreferrer" className="social-circle-link">
                 <FaInstagram />
               </a>
             </div>
@@ -92,8 +90,8 @@ export default function Footer() {
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} Holidays Navigator. All rights reserved.</p>
           <div className="footer-legal-links">
-            <a href="#privacy" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-            <a href="#terms" onClick={(e) => e.preventDefault()}>Terms & Conditions</a>
+            <Link to="/privacy" target="_blank" rel="noopener noreferrer">Privacy Policy</Link>
+            <Link to="/terms" target="_blank" rel="noopener noreferrer">Terms &amp; Conditions</Link>
           </div>
         </div>
       </div>

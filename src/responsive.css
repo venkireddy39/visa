@@ -56,15 +56,15 @@ body {
 @media (max-width: 1024px) {
   .nav-container {
     display: flex !important;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
   }
 
-  /* Show logo and center it on tablet/mobile */
+  /* Keep logo pinned to the far right on mobile/tablet */
   .nav-logo-right {
     display: flex;
-    justify-self: center;
-    margin: 0 auto;
+    justify-self: end;
+    margin-left: auto;
   }
 
   /* Hide hamburger menu toggle */
