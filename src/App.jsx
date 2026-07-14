@@ -5,6 +5,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
+import ContactPage from './pages/ContactPage';
 
 import ApplyPage from './pages/ApplyPage';
 import TrackPage from './pages/TrackPage';
@@ -27,6 +28,7 @@ function App() {
 
             <Route path="/about" element={<AboutPage />} />
             <Route path="/services" element={<ServicesPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route path="/apply" element={<ApplyPage />} />
             <Route path="/track" element={<TrackPage />} />
             <Route path="/admin" element={<AdminPage />} />

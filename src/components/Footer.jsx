@@ -86,6 +86,7 @@ export default function Footer() {
               </li>
             </ul>
           </div>
+
         </div>
         <div className="footer-bottom">
           <p>© {new Date().getFullYear()} Holidays Navigator. All rights reserved.</p>

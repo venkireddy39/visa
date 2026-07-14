@@ -135,8 +135,7 @@ const bodyText = {
   lineHeight: '1.9',
   margin: '0 0 1rem',
   textAlign: 'left',
-};
-
+}
 const listStyle = {
   paddingLeft: '1.6rem',
   margin: '0.25rem 0 1rem',
