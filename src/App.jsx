@@ -12,6 +12,7 @@ import TrackPage from './pages/TrackPage';
 import AdminPage from './pages/AdminPage';
 import TermsPage from './pages/TermsPage';
 import PrivacyPage from './pages/PrivacyPage';
+import Blog from './pages/Blog';
 import WhatsAppButton from './components/WhatsAppButton';
 import BackToTop from './components/BackToTop';
 
@@ -34,6 +35,8 @@ function App() {
             <Route path="/admin" element={<AdminPage />} />
             <Route path="/terms" element={<TermsPage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/Blog" element={<Blog />} />
           </Routes>
         </main>
 

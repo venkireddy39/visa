@@ -1,11 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { FaGlobeAmericas, FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from 'react-icons/fa';
 
 export default function Footer() {
+  const location = useLocation();
   const handleScrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (location.pathname.toLowerCase() === '/contact') {
+    return null;
+  }
 
   return (
     <footer className="footer">
@@ -65,7 +70,6 @@ export default function Footer() {
               </li>
             </ul>
           </div>
-
           <div>
             <h4 className="footer-col-title">Quick Links</h4>
             <ul className="footer-links-list">
@@ -83,6 +87,9 @@ export default function Footer() {
               </li>
               <li className="footer-link-item">
                 <Link to="/admin" onClick={handleScrollToTop}>Admin Area</Link>
+              </li>
+              <li className="footer-link-item">
+                <Link to="/Blog" onClick={handleScrollToTop}>Blog</Link>
               </li>
             </ul>
           </div>

@@ -5,7 +5,7 @@ import {
   FaPassport, FaCheckCircle, FaTrashAlt, FaCloudUploadAlt,
   FaGlobe, FaShieldAlt, FaClock, FaArrowRight, FaLock, FaFileAlt, FaUser, FaUsers
 } from 'react-icons/fa';
-import FaqSection from '../components/FaqSection';
+
 
 export default function ApplyPage() {
   const [searchParams] = useSearchParams();
@@ -246,9 +246,18 @@ export default function ApplyPage() {
         <main className="single-form-main">
 
           {/* Page Header */}
-          <div className="single-form-page-header">
-            <h1 className="single-form-page-title">Visa Application Form</h1>
-            <p className="single-form-page-sub">Fill in all the details below to submit your visa application.</p>
+          <div className="single-form-page-header-wrapper">
+            <div className="single-form-page-header luxury-header-card">
+              <div className="luxury-header-glow"></div>
+              <div className="luxury-header-content">
+                <div className="luxury-badge">
+                  <FaShieldAlt className="luxury-badge-icon" />
+                  <span>Secure Visa Application Portal</span>
+                </div>
+                <h1 className="single-form-page-title">Visa Application Form</h1>
+                <p className="single-form-page-sub">Fill in all the details below to submit your visa application.</p>
+              </div>
+            </div>
           </div>
 
           <form onSubmit={handleFormSubmit} noValidate>
@@ -602,26 +611,25 @@ export default function ApplyPage() {
               <strong>₹{totalAmount.toLocaleString('en-IN')}</strong>
             </div>
 
-            <div className="payment-secure-notice" style={{ marginTop: '1rem', background: 'rgba(22,163,74,0.1)' }}>
-              <FaLock className="secure-lock-icon" />
-              <p style={{ color: 'rgba(255,255,255,0.7)' }}>256-bit SSL encrypted · All major cards, UPI &amp; Netbanking</p>
+            <div className="payment-secure-notice" style={{ marginTop: '0.6rem', padding: '0.5rem', background: 'rgba(22,163,74,0.1)' }}>
+              <FaLock className="secure-lock-icon" style={{ fontSize: '0.75rem' }} />
+              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', lineHeight: '1.2' }}>256-bit SSL encrypted · All major cards, UPI &amp; Netbanking</p>
             </div>
 
             <form onSubmit={handleFormSubmit} noValidate>
-              <button type="submit" className="apply-pay-btn" style={{ marginTop: '1.25rem' }} disabled={submitting}>
+              <button type="submit" className="apply-pay-btn" style={{ marginTop: '0.75rem', padding: '0.75rem' }} disabled={submitting}>
                 {submitting ? 'Processing…' : `Submit Application`}
                 {!submitting && <FaArrowRight style={{ marginLeft: '8px' }} />}
               </button>
             </form>
           </div>
 
-          <div className="apply-sidebar-trust">
+          <div className="apply-sidebar-trust" style={{ marginTop: '0.25rem' }}>
             <FaLock className="trust-icon" /> SSL Secured &amp; 100% Confidential
           </div>
         </aside>
 
       </div>
-      <FaqSection />
     </div>
   );
 }

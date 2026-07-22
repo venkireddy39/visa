@@ -1,10 +1,8 @@
 import React from 'react';
-
 export default function TermsPage() {
   return (
     <div style={{ paddingTop: '7rem', backgroundColor: '#ffffff', minHeight: '100vh' }}>
       <div style={{ maxWidth: '900px', margin: '0', padding: '3rem 3rem 5rem', textAlign: 'left' }}>
-
         {/* Title */}
         <h1 style={{ fontSize: '3.2rem', fontWeight: '800', color: '#0f172a', marginBottom: '0.5rem' }}>
           Terms and Conditions
@@ -12,11 +10,9 @@ export default function TermsPage() {
         <p style={{ color: '#64748b', fontSize: '1.05rem', marginBottom: '2.5rem' }}>
           Last updated: July 11, 2026
         </p>
-
         <p style={{ color: '#334155', fontSize: '1.1rem', lineHeight: '1.85', marginBottom: '2rem' }}>
           Welcome to Holidays Navigator. By accessing or using our website and services, you agree to the following Terms &amp; Conditions. Please read them carefully.
         </p>
-
         {/* Section 1 */}
         <h2 style={sectionHeading}>1. Acceptance of Terms</h2>
         <p style={bodyText}>
@@ -28,7 +24,6 @@ export default function TermsPage() {
         <p style={bodyText}>
           Holidays Navigator provides visa consultation, documentation assistance, application support, appointment scheduling, and travel-related guidance. We do not guarantee visa approval, as all decisions are made solely by the respective embassy, consulate, or immigration authority.
         </p>
-
         {/* Section 3 */}
         <h2 style={sectionHeading}>3. User Responsibilities</h2>
         <p style={bodyText}>You agree to:</p>
