@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import '../apply-page.css';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { destinations, allCountries } from '../data/destinations';
+import FaqSection from '../components/FaqSection';
 import {
-  FaPassport, FaCheckCircle, FaTrashAlt, FaCloudUploadAlt,
-  FaGlobe, FaShieldAlt, FaClock, FaArrowRight, FaLock, FaFileAlt, FaUser, FaUsers
+  FaCheckCircle, FaTrashAlt, FaCloudUploadAlt,
+  FaGlobe, FaShieldAlt, FaArrowRight, FaFileAlt, FaUser, FaUsers
 } from 'react-icons/fa';
 
 
@@ -12,24 +14,69 @@ export default function ApplyPage() {
   const navigate = useNavigate();
 
   const queryCountry = searchParams.get('country') || '';
-  const queryType    = searchParams.get('type') || 'tourist';
+  const queryType = searchParams.get('type') || 'tourist';
 
-  const [submitting,  setSubmitting]  = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const [successData, setSuccessData] = useState(null);
-  const [errors,      setErrors]      = useState({});
+  const [errors, setErrors] = useState({});
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  const [activeSection, setActiveSection] = useState('destination');
+
+  const scrollToSection = (id) => {
+    const container = document.querySelector('.single-form-main');
+    const element = document.getElementById(`section-${id}`);
+    if (container && element) {
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      const targetScrollTop = container.scrollTop + (elementRect.top - containerRect.top) - 15;
+      container.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+      setActiveSection(id);
+    }
+  };
+
+  useEffect(() => {
+    const container = document.querySelector('.single-form-main');
+    if (!container) return;
+
+    const sections = ['destination', 'personal', 'documents'];
+    const observerOptions = {
+      root: container,
+      rootMargin: '-20% 0px -60% 0px',
+      threshold: 0
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionId = entry.target.id.replace('section-', '');
+          setActiveSection(sectionId);
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(id => {
+      const el = document.getElementById(`section-${id}`);
+      if (el) observer.observe(el);
+    });
+
+    return () => {
+      sections.forEach(id => {
+        const el = document.getElementById(`section-${id}`);
+        if (el) observer.unobserve(el);
+      });
+    };
+  }, []);
 
   const [application, setApplication] = useState({
-    countryId:         queryCountry,
-    visaType:          queryType,
-    fullName:          '',
-    email:             '',
-    phone:             '',
-    passportNumber:    '',
-    passportExpiry:    '',
-    travelDate:        '',
-    durationDays:      '30',
+    countryId: queryCountry,
+    visaType: queryType,
+    fullName: '',
+    email: '',
+    phone: '',
+    passportNumber: '',
+    passportExpiry: '',
+    travelDate: '',
+    durationDays: '30',
     additionalDetails: ''
   });
 
@@ -37,22 +84,35 @@ export default function ApplyPage() {
   // Per-traveler documents: { 0: { passportFront: null, passportBack: null, photo: null }, ... }
   const DOC_TYPES = [
     { key: 'passportFront', label: 'Passport Front Page', icon: '📄' },
-    { key: 'passportBack',  label: 'Passport Back Page',  icon: '📄' },
-    { key: 'photo',         label: 'Recent Passport Photo', icon: '📸' },
+    { key: 'passportBack', label: 'Passport Back Page', icon: '📄' },
+    { key: 'photo', label: 'Recent Passport Photo', icon: '📸' },
   ];
   const emptyDocs = () => ({ passportFront: null, passportBack: null, photo: null });
   const [travelerDocs, setTravelerDocs] = useState({ 0: emptyDocs() });
 
   useEffect(() => {
-    if (queryCountry) setApplication(prev => ({ ...prev, countryId: queryCountry }));
+    if (queryCountry) {
+      setApplication(prev => ({ ...prev, countryId: queryCountry }));
+    }
   }, [queryCountry]);
 
-  const selectedCountry      = destinations.find(d => d.id === application.countryId);
+  useEffect(() => {
+    const scrollToTop = () => {
+      window.scrollTo(0, 0);
+      const container = document.querySelector('.single-form-main');
+      if (container) {
+        container.scrollTop = 0;
+      }
+    };
+    scrollToTop();
+    const timer = setTimeout(scrollToTop, 100);
+    return () => clearTimeout(timer);
+  }, [application.countryId, queryCountry]);
+
+  const selectedCountry = destinations.find(d => d.id === application.countryId);
   const selectedCountryBasic = allCountries.find(c => c.id === application.countryId);
 
-  const travelerCount  = 1 + additionalTravelers.length;
-  const baseVisaFee    = selectedCountry ? selectedCountry.startingPrice : 3500;
-  const visaFee        = baseVisaFee * travelerCount;
+  const travelerCount = 1 + additionalTravelers.length;
   const countryDisplayName = selectedCountry
     ? selectedCountry.name
     : selectedCountryBasic
@@ -60,15 +120,17 @@ export default function ApplyPage() {
       : application.countryId
         ? application.countryId.toUpperCase()
         : '—';
-  const serviceFee  = 950 * travelerCount;
-  const gst         = Math.round((visaFee + serviceFee) * 0.18);
-  const totalAmount = visaFee + serviceFee + gst;
 
   /* ── Handlers ── */
   const handleTextChange = (e) => {
     const { name, value } = e.target;
     setApplication(prev => ({ ...prev, [name]: value }));
     if (errors[name]) setErrors(prev => ({ ...prev, [name]: '' }));
+    if (name === 'countryId') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const container = document.querySelector('.single-form-main');
+      if (container) container.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const addTraveler = () => {
@@ -119,13 +181,13 @@ export default function ApplyPage() {
 
   const validate = () => {
     const newErrors = {};
-    if (!application.countryId)      newErrors.countryId      = 'Please select a destination country.';
-    if (!application.fullName)       newErrors.fullName       = 'Full name is required.';
-    if (!application.email)          newErrors.email          = 'Email address is required.';
-    if (!application.phone)          newErrors.phone          = 'Phone number is required.';
+    if (!application.countryId) newErrors.countryId = 'Please select a destination country.';
+    if (!application.fullName) newErrors.fullName = 'Full name is required.';
+    if (!application.email) newErrors.email = 'Email address is required.';
+    if (!application.phone) newErrors.phone = 'Phone number is required.';
     if (!application.passportNumber) newErrors.passportNumber = 'Passport number is required.';
     if (!application.passportExpiry) newErrors.passportExpiry = 'Passport expiry date is required.';
-    if (!application.travelDate)     newErrors.travelDate     = 'Planned travel date is required.';
+    if (!application.travelDate) newErrors.travelDate = 'Planned travel date is required.';
     // Validate documents for each traveler
     for (let t = 0; t < travelerCount; t++) {
       const docs = travelerDocs[t] || emptyDocs();
@@ -150,14 +212,14 @@ export default function ApplyPage() {
 
     setSubmitting(true);
     const trackingId = 'VV-' + Math.floor(100000 + Math.random() * 900000);
-    const finalData  = {
+    const finalData = {
       ...application,
       additionalTravelers,
       additionalDetails: additionalTravelers.length > 0 ? JSON.stringify(additionalTravelers) : application.additionalDetails,
       trackingId,
-      status:         'SUBMITTED',
+      status: 'SUBMITTED',
       submissionDate: new Date().toLocaleDateString(),
-      countryName:    countryDisplayName
+      countryName: countryDisplayName
     };
 
     try {
@@ -242,6 +304,40 @@ export default function ApplyPage() {
     <div className="apply-page-container">
       <div className="single-form-page-inner">
 
+        {/* Left vertical icons navigation bar */}
+        <div className="single-form-steps-nav">
+          <div
+            role="button"
+            tabIndex={0}
+            className={`steps-nav-item ${activeSection === 'destination' ? 'active' : ''}`}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollToSection('destination'); }}
+            onKeyDown={(e) => e.key === 'Enter' && scrollToSection('destination')}
+            title="Destination & Visa Type"
+          >
+            <FaGlobe />
+          </div>
+          <div
+            role="button"
+            tabIndex={0}
+            className={`steps-nav-item ${activeSection === 'personal' ? 'active' : ''}`}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollToSection('personal'); }}
+            onKeyDown={(e) => e.key === 'Enter' && scrollToSection('personal')}
+            title="Personal & Passport Details"
+          >
+            <FaUser />
+          </div>
+          <div
+            role="button"
+            tabIndex={0}
+            className={`steps-nav-item ${activeSection === 'documents' ? 'active' : ''}`}
+            onClick={(e) => { e.preventDefault(); e.stopPropagation(); scrollToSection('documents'); }}
+            onKeyDown={(e) => e.key === 'Enter' && scrollToSection('documents')}
+            title="Upload Documents"
+          >
+            <FaFileAlt />
+          </div>
+        </div>
+
         {/* ── Left: Form ── */}
         <main className="single-form-main">
 
@@ -263,7 +359,7 @@ export default function ApplyPage() {
           <form onSubmit={handleFormSubmit} noValidate>
 
             {/* ── SECTION 1: Destination ── */}
-            <div className="single-form-section">
+            <div id="section-destination" className="single-form-section">
               <div className="single-form-section-head">
                 <div className="section-head-icon"><FaGlobe /></div>
                 <div>
@@ -272,45 +368,44 @@ export default function ApplyPage() {
                 </div>
               </div>
 
-              <div className="apply-form-row">
-                <div className="apply-form-group">
-                  <label className="apply-form-label">Destination Country <span className="required">*</span></label>
-                  <select
-                    name="countryId"
-                    value={application.countryId}
-                    onChange={handleTextChange}
-                    className={`apply-form-select ${errors.countryId ? 'input-error' : ''}`}
-                  >
-                    <option value="">— Choose a Country —</option>
-                    {allCountries.map(c => (
-                      <option key={c.id} value={c.id}>{c.flag} {c.name}</option>
-                    ))}
-                  </select>
-                  {errors.countryId && <span className="apply-field-error">{errors.countryId}</span>}
-                </div>
-                <div className="apply-form-group">
-                  <label className="apply-form-label">Visa Category <span className="required">*</span></label>
-                  <div className="apply-visa-type-grid" style={{ marginTop: '0.25rem' }}>
-                    {['tourist', 'business'].map(type => (
-                      <label key={type} className={`visa-type-card ${application.visaType === type ? 'selected' : ''}`}>
-                        <input
-                          type="radio" name="visaType" value={type}
-                          checked={application.visaType === type}
-                          onChange={handleTextChange} style={{ display: 'none' }}
-                        />
-                        <span className="visa-type-icon">{type === 'tourist' ? '🏖️' : '💼'}</span>
-                        <span className="visa-type-name">{type === 'tourist' ? 'Tourist Visa' : 'Business Visa'}</span>
-                        <span className="visa-type-desc">{type === 'tourist' ? 'Leisure, tourism & family visits' : 'Meetings, conferences & trade'}</span>
-                        {application.visaType === type && <FaCheckCircle className="visa-type-check" />}
-                      </label>
-                    ))}
-                  </div>
+              <div className="apply-form-group" style={{ marginBottom: '1.25rem' }}>
+                <label className="apply-form-label">Destination Country <span className="required">*</span></label>
+                <select
+                  name="countryId"
+                  value={application.countryId}
+                  onChange={handleTextChange}
+                  className={`apply-form-select ${errors.countryId ? 'input-error' : ''}`}
+                >
+                  <option value="">— Choose a Country —</option>
+                  {allCountries.map(c => (
+                    <option key={c.id} value={c.id}>{c.flag} {c.name}</option>
+                  ))}
+                </select>
+                {errors.countryId && <span className="apply-field-error">{errors.countryId}</span>}
+              </div>
+
+              <div className="apply-form-group">
+                <label className="apply-form-label">Visa Category <span className="required">*</span></label>
+                <div className="apply-visa-type-grid" style={{ marginTop: '0.25rem' }}>
+                  {['tourist', 'business'].map(type => (
+                    <label key={type} className={`visa-type-card ${application.visaType === type ? 'selected' : ''}`}>
+                      <input
+                        type="radio" name="visaType" value={type}
+                        checked={application.visaType === type}
+                        onChange={handleTextChange} style={{ display: 'none' }}
+                      />
+                      <span className="visa-type-icon">{type === 'tourist' ? '🏖️' : '💼'}</span>
+                      <span className="visa-type-name">{type === 'tourist' ? 'Tourist Visa' : 'Business Visa'}</span>
+                      <span className="visa-type-desc">{type === 'tourist' ? 'Leisure, tourism & family visits' : 'Meetings, conferences & trade'}</span>
+                      {application.visaType === type && <FaCheckCircle className="visa-type-check" />}
+                    </label>
+                  ))}
                 </div>
               </div>
             </div>
 
             {/* ── SECTION 2: Primary Applicant Personal Details ── */}
-            <div className="single-form-section">
+            <div id="section-personal" className="single-form-section">
               <div className="single-form-section-head">
                 <div className="section-head-icon"><FaUser /></div>
                 <div>
@@ -459,9 +554,9 @@ export default function ApplyPage() {
             </div>
 
             {/* ── SECTION 3: Upload Documents ── */}
-            <div className="single-form-section">
+            <div id="section-documents" className="single-form-section">
               <div className="single-form-section-head">
-                <div className="section-head-icon" style={{ background: 'rgba(59,130,246,0.1)', color: '#3b82f6' }}><FaFileAlt /></div>
+                <div className="section-head-icon"><FaFileAlt /></div>
                 <div>
                   <h2 className="section-head-title">Upload Documents</h2>
                   <p className="section-head-sub">Upload all 3 required documents for each traveler. No field can be left empty.</p>
@@ -534,100 +629,16 @@ export default function ApplyPage() {
               })}
             </div>
 
-            {/* ── Submit Button (mobile only — desktop uses sidebar) ── */}
-            <div className="single-form-submit-mobile">
-              <button type="submit" className="apply-pay-btn" disabled={submitting}>
-                {submitting ? 'Processing…' : `Submit Application`}
-                {!submitting && <FaArrowRight style={{ marginLeft: '8px' }} />}
+            {/* ── Bottom Submit Bar ── */}
+            <div className="single-form-submit-bar">
+              <button type="submit" className="apply-pay-btn submit-bar-btn" disabled={submitting}>
+                {submitting ? 'Processing…' : 'Submit Application'}
+                {!submitting && <FaArrowRight style={{ marginLeft: '10px' }} />}
               </button>
             </div>
 
           </form>
         </main>
-
-        {/* ── Right Sidebar ── */}
-        <aside className="single-form-sidebar">
-          {/* Logo */}
-          <div className="apply-sidebar-brand">
-            <img src="/images/logo.png" alt="Holidays Navigator" className="apply-sidebar-logo" />
-          </div>
-
-          {/* Destination Summary */}
-          {(selectedCountry || selectedCountryBasic) && (
-            <div className="apply-sidebar-summary">
-              <h4>Selected Destination</h4>
-              <p className="summary-country-name">
-                {selectedCountryBasic?.flag} {countryDisplayName}
-              </p>
-              {selectedCountry && (
-                <>
-                  <div className="summary-meta-row">
-                    <FaClock className="meta-icon" />
-                    <span>{selectedCountry.processingTime}</span>
-                  </div>
-                  <div className="summary-meta-row">
-                    <FaShieldAlt className="meta-icon" />
-                    <span>{selectedCountry.successRate}% Approval Rate</span>
-                  </div>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Travelers Count */}
-          {travelerCount > 1 && (
-            <div className="apply-sidebar-summary" style={{ marginTop: '0' }}>
-              <h4><FaUsers style={{ marginRight: '6px' }} />Travelers</h4>
-              <p className="summary-country-name" style={{ fontSize: '1.4rem' }}>{travelerCount}</p>
-              <p style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.5)' }}>
-                1 primary + {travelerCount - 1} additional
-              </p>
-            </div>
-          )}
-
-          {/* Fee Breakdown */}
-          <div className="sidebar-fee-card">
-            <h4>Fee Breakdown</h4>
-            {travelerCount > 1 && (
-              <div className="sidebar-fee-row">
-                <span>Travelers</span>
-                <span>{travelerCount}×</span>
-              </div>
-            )}
-            <div className="sidebar-fee-row">
-              <span>Embassy Fee</span>
-              <span>₹{visaFee.toLocaleString('en-IN')}</span>
-            </div>
-            <div className="sidebar-fee-row">
-              <span>Service Fee</span>
-              <span>₹{serviceFee.toLocaleString('en-IN')}</span>
-            </div>
-            <div className="sidebar-fee-row">
-              <span>GST (18%)</span>
-              <span>₹{gst.toLocaleString('en-IN')}</span>
-            </div>
-            <div className="sidebar-fee-total">
-              <span>Total Payable</span>
-              <strong>₹{totalAmount.toLocaleString('en-IN')}</strong>
-            </div>
-
-            <div className="payment-secure-notice" style={{ marginTop: '0.6rem', padding: '0.5rem', background: 'rgba(22,163,74,0.1)' }}>
-              <FaLock className="secure-lock-icon" style={{ fontSize: '0.75rem' }} />
-              <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '0.72rem', lineHeight: '1.2' }}>256-bit SSL encrypted · All major cards, UPI &amp; Netbanking</p>
-            </div>
-
-            <form onSubmit={handleFormSubmit} noValidate>
-              <button type="submit" className="apply-pay-btn" style={{ marginTop: '0.75rem', padding: '0.75rem' }} disabled={submitting}>
-                {submitting ? 'Processing…' : `Submit Application`}
-                {!submitting && <FaArrowRight style={{ marginLeft: '8px' }} />}
-              </button>
-            </form>
-          </div>
-
-          <div className="apply-sidebar-trust" style={{ marginTop: '0.25rem' }}>
-            <FaLock className="trust-icon" /> SSL Secured &amp; 100% Confidential
-          </div>
-        </aside>
 
       </div>
     </div>

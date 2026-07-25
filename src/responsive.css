@@ -524,6 +524,38 @@ body {
   }
 }
 
+/* ── New single-form layout responsive overrides ── */
+@media (max-width: 1200px) {
+  .single-form-steps-nav {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .apply-page-container {
+    padding-top: 5rem;
+  }
+
+  .single-form-page-inner {
+    height: auto;
+  }
+
+  .single-form-main {
+    height: auto;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 480px) {
+  .apply-page-container {
+    padding-top: 4.5rem;
+  }
+
+  .single-form-page-inner {
+    padding: 0 0.75rem 1.5rem;
+  }
+}
+
 
 /* ══════════════════════════════════════════
    TRACK PAGE
@@ -852,6 +884,14 @@ body {
 
     /* Fade-in on page load */
     animation: floatingSearchFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both !important;
+    transition: opacity 0.3s ease, transform 0.3s ease !important;
+  }
+
+  .nav-search-container.search-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateX(-50%) translateY(25px) !important;
+    animation: none !important;
   }
 
   /* ── Inner bar: glassmorphism pill ── */

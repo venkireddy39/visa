@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams, useLocation } from 'react-router-dom';
-import { FaBars, FaTimes, FaGlobeAmericas, FaCheckCircle, FaSearch } from 'react-icons/fa';
+import { FaBars, FaTimes, FaGlobeAmericas, FaCheckCircle, FaSearch, FaHome } from 'react-icons/fa';
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [hideSearch, setHideSearch] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -29,21 +30,32 @@ export default function Navbar() {
       } else {
         setScrolled(false);
       }
+
+      // Hide search bar when "Get In Touch" / Contact section or Footer enters viewport
+      const contactEl = document.getElementById('contact') || document.querySelector('.contact-section') || document.querySelector('footer');
+      if (contactEl) {
+        const rect = contactEl.getBoundingClientRect();
+        if (rect.top <= window.innerHeight - 80) {
+          setHideSearch(true);
+        } else {
+          setHideSearch(false);
+        }
+      } else {
+        setHideSearch(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   useEffect(() => {
-    if (location.pathname === '/') {
-      document.body.classList.add('has-bottom-search');
-    } else {
-      document.body.classList.remove('has-bottom-search');
-    }
+    document.body.classList.add('has-bottom-search');
     return () => {
       document.body.classList.remove('has-bottom-search');
     };
-  }, [location.pathname]);
+  }, []);
 
   const handleLinkClick = () => {
     setMobileOpen(false);
@@ -55,7 +67,6 @@ export default function Navbar() {
       <div className="container nav-container">
 
         <div className="nav-brand-section">
-
 
           <div className="nav-guarantee-badge">
             <div className="badge-icon-wrapper">
@@ -69,24 +80,25 @@ export default function Navbar() {
         </div>
 
         <nav className={mobileOpen ? 'mobile-active' : ''}>
-          {location.pathname === '/' && (
-            <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''}`}>
-              <div className="nav-search-bar">
-                <FaSearch className="search-icon" />
-                <input
-                  type="text"
-                  placeholder="Search destination country..."
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  className="nav-search-input"
-                  autoComplete="off"
-                />
-              </div>
+          <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''} ${hideSearch ? 'search-hidden' : ''}`}>
+            <div className="nav-search-bar">
+              <FaSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Search destination country..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="nav-search-input"
+                autoComplete="off"
+              />
             </div>
-          )}
+          </div>
         </nav>
 
-        <div className="nav-logo-right">
+        <div className="nav-logo-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <Link to="/" onClick={handleLinkClick} className="nav-home-link" title="Home">
+            <FaHome className="nav-home-icon" />
+          </Link>
           <Link to="/" onClick={handleLinkClick}>
             <img src="/images/logo.png" alt="Holidays Navigator Logo" className="nav-logo-img" />
           </Link>

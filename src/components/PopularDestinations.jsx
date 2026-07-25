@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { allCountries } from '../data/destinations';
 import { FaArrowRight, FaSearch } from 'react-icons/fa';
@@ -11,6 +11,15 @@ export default function PopularDestinations() {
   const handleApply = (countryId) => {
     navigate(`/apply?country=${countryId}`);
   };
+
+  useEffect(() => {
+    if (searchTerm) {
+      const section = document.getElementById('popular-destinations');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  }, [searchTerm]);
 
   const filteredCountries = allCountries.filter((country) => 
     country.name.toLowerCase().includes(searchTerm.toLowerCase())
