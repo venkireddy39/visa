@@ -28,6 +28,8 @@ const BLOG_POSTS = [
         readTime: '8 min read',
         date: 'July 15, 2026',
 
+        author: 'Tirumala Reddy',
+        authorRole: 'Senior Visa Consultant',
         image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80',
         featured: true,
         tags: ['Tourist Visa', 'Requirements', 'Travel Guide']

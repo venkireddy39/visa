@@ -211,7 +211,7 @@ textarea {
   box-shadow: none;
 }
 
-/* Hide badge and logo on scroll — only search bar remains */
+/* Hide badge and logo on scroll — only search bar remains (desktop only) */
 .header.scrolled .nav-brand-section,
 .header.scrolled .nav-logo-right {
   opacity: 0;
@@ -226,6 +226,16 @@ textarea {
   pointer-events: auto;
   transform: translateY(0);
   transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* On mobile/tablet: always keep logo and home icon visible regardless of scroll */
+@media (max-width: 1024px) {
+  .header.scrolled .nav-brand-section,
+  .header.scrolled .nav-logo-right {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
 }
 
 .nav-container {
@@ -349,9 +359,12 @@ textarea {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-.nav-search-container.search-hidden {
-  opacity: 0 !important;
-  pointer-events: none !important;
+/* Only hide the search bar near footer on DESKTOP — on mobile it's a fixed floating bar and should never hide */
+@media (min-width: 1024px) {
+  .nav-search-container.search-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
 }
 
 .nav-search-bar {
@@ -535,24 +548,7 @@ textarea {
     justify-content: space-between;
   }
 
-  .nav-search-container {
-    display: none;
-  }
-
-  .nav-search-container.mobile-open {
-    display: flex;
-    flex-direction: column;
-    position: absolute;
-    top: 80px;
-    left: 1rem;
-    right: 1rem;
-    background: transparent;
-    padding: 0;
-  }
-
-  .nav-search-bar {
-    width: 100%;
-  }
+  /* search bar is handled as a fixed floating pill by responsive.css on mobile */
 
   .nav-guarantee-badge {
     display: none;

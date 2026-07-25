@@ -887,12 +887,7 @@ body {
     transition: opacity 0.3s ease, transform 0.3s ease !important;
   }
 
-  .nav-search-container.search-hidden {
-    opacity: 0 !important;
-    pointer-events: none !important;
-    transform: translateX(-50%) translateY(25px) !important;
-    animation: none !important;
-  }
+  /* search-hidden is desktop-only — floating bar always stays visible on mobile */
 
   /* ── Inner bar: glassmorphism pill ── */
   .nav-search-bar {
