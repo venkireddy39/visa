@@ -854,7 +854,7 @@ body {
 @keyframes floatingSearchFadeIn {
   from {
     opacity: 0;
-    transform: translateX(-50%) translateY(20px);
+    transform: translateX(-50%) translateY(-20px);
   }
   to {
     opacity: 1;
@@ -867,8 +867,9 @@ body {
   .nav-search-container {
     display: flex !important;
     position: fixed !important;
-    /* Float it above the bottom edge with safe-area respect */
-    bottom: calc(18px + env(safe-area-inset-bottom)) !important;
+    /* Float it near the top edge with safe-area respect */
+    top: calc(70px + env(safe-area-inset-top)) !important;
+    bottom: auto !important;
     left: 50% !important;
     right: auto !important;
     transform: translateX(-50%) !important;
@@ -883,7 +884,11 @@ body {
 
     /* Fade-in on page load */
     animation: floatingSearchFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both !important;
-    transition: opacity 0.3s ease, transform 0.3s ease !important;
+    transition: opacity 0.3s ease, transform 0.3s ease, top 0.3s ease !important;
+  }
+
+  .header.scrolled .nav-search-container {
+    top: calc(54px + env(safe-area-inset-top)) !important;
   }
 
   /* search-hidden is desktop-only — floating bar always stays visible on mobile */
@@ -951,18 +956,19 @@ body {
     color: #94a3b8 !important;
   }
 
-  /* ── Body bottom padding so content is never hidden under the bar ── */
+  /* ── Body padding for top search bar ── */
   body.has-bottom-search {
-    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+    padding-bottom: 0 !important;
+    padding-top: calc(52px) !important;
   }
 
-  /* ── Lift floating action buttons above the search bar ── */
+  /* ── Keep floating action buttons at default bottom on mobile ── */
   body.has-bottom-search .whatsapp-float {
-    bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+    bottom: 1.25rem !important;
   }
 
   body.has-bottom-search .back-to-top {
-    bottom: calc(5.5rem + env(safe-area-inset-bottom)) !important;
+    bottom: 1.25rem !important;
   }
 }
 
