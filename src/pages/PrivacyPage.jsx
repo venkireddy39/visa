@@ -18,7 +18,6 @@ export default function PrivacyPage() {
           personal information. This Privacy Policy explains how we collect, use, store, and protect
           your information when you use our website and visa assistance services.
         </p>
-
         {/* Section 1 */}
         <h2 style={sectionHeading}>1. Information We Collect</h2>
         <p style={bodyText}>We may collect the following information:</p>
@@ -34,7 +33,6 @@ export default function PrivacyPage() {
           <li style={listItem}>Visa application details</li>
           <li style={listItem}>Payment information (processed securely through authorized payment providers)</li>
         </ul>
-
         {/* Section 2 */}
         <h2 style={sectionHeading}>2. How We Use Your Information</h2>
         <p style={bodyText}>Your information is used to:</p>
@@ -68,14 +66,12 @@ export default function PrivacyPage() {
           We implement appropriate technical and organizational security measures to protect your personal
           information from unauthorized access, disclosure, alteration, or destruction.
         </p>
-
         {/* Section 5 */}
         <h2 style={sectionHeading}>5. Data Retention</h2>
         <p style={bodyText}>
           Your personal information is retained only for as long as necessary to provide our services,
           comply with legal obligations, resolve disputes, and enforce our agreements.
         </p>
-
         {/* Section 6 */}
         <h2 style={sectionHeading}>6. Cookies</h2>
         <p style={bodyText}>Our website may use cookies and similar technologies to:</p>
@@ -107,14 +103,12 @@ export default function PrivacyPage() {
           Our website may contain links to third-party websites. We are not responsible for the privacy
           practices or content of those websites.
         </p>
-
         {/* Section 9 */}
         <h2 style={sectionHeading}>9. Children's Privacy</h2>
         <p style={bodyText}>
           Our services are not intended for individuals under the age of 18 without the consent of a
           parent or legal guardian. We do not knowingly collect personal information from children.
         </p>
-
         {/* Section 10 */}
         <h2 style={sectionHeading}>10. Changes to This Privacy Policy</h2>
         <p style={bodyText}>

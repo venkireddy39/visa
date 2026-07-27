@@ -102,8 +102,7 @@ body {
 
 /* Scrolled state: always keep badge visible enough on mobile */
 @media (max-width: 1024px) {
-  .header.scrolled .nav-brand-section,
-  .header.scrolled .nav-logo-right {
+  .header.scrolled .nav-brand-section {
     opacity: 1 !important;
     transform: none !important;
     pointer-events: auto !important;

@@ -338,7 +338,7 @@ export const allCountries = [
   { id: 'bulgaria', name: 'Bulgaria', flag: '🇧🇬', continent: 'Europe', image: 'https://images.unsplash.com/photo-1516550893923-42d28e5677af?w=600&q=80&fit=crop' },
   { id: 'burkina-faso', name: 'Burkina Faso', flag: '🇧🇫', continent: 'Africa', image: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80&fit=crop' },
   { id: 'burundi', name: 'Burundi', flag: '🇧🇮', continent: 'Africa', image: 'https://images.unsplash.com/photo-1580060839134-75a5edca2e99?w=600&q=80&fit=crop' },
-  { id: 'cabo-verde', name: 'Cabo Verde', flag: '🇨🇻', continent: 'Africa', image: 'https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=600&q=80&fit=crop' },
+  { id: 'cabo-verde', name: 'Cabo Verde', flag: '🇨🇻', continent: 'Africa', image: 'https://i.pinimg.com/736x/9c/c6/48/9cc64811e97ba056729e3c6282a0f492.jpg' },
   { id: 'cambodia', name: 'Cambodia', flag: '🇰🇭', continent: 'Asia', image: 'https://i.pinimg.com/736x/f7/f7/36/f7f736f058bf672523b4c81b6b7cdb3d.jpg' },
   { id: 'cameroon', name: 'Cameroon', flag: '🇨🇲', continent: 'Africa', image: 'https://i.pinimg.com/736x/8f/ff/30/8fff30d70e5fe0ff940731f8c7e3aacd.jpg' },
   { id: 'central-african-republic', name: 'Central African Republic', flag: '🇨🇫', continent: 'Africa', image: 'https://i.pinimg.com/1200x/cb/dd/ce/cbddceaa1f49a288b87befb90bd6ae2f.jpg' },

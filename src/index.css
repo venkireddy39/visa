@@ -228,10 +228,9 @@ textarea {
   transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
-/* On mobile/tablet: always keep logo and home icon visible regardless of scroll */
+/* On mobile/tablet: let the badge stay visible, but allow logo to disappear */
 @media (max-width: 1024px) {
-  .header.scrolled .nav-brand-section,
-  .header.scrolled .nav-logo-right {
+  .header.scrolled .nav-brand-section {
     opacity: 1 !important;
     pointer-events: auto !important;
     transform: translateY(0) !important;

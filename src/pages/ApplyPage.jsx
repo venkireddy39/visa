@@ -218,7 +218,7 @@ export default function ApplyPage() {
       additionalDetails: additionalTravelers.length > 0 ? JSON.stringify(additionalTravelers) : application.additionalDetails,
       trackingId,
       status: 'SUBMITTED',
-      submissionDate: new Date().toLocaleDateString(),
+      submissionDate: new Date().toISOString().split("T")[0],
       countryName: countryDisplayName
     };
 
