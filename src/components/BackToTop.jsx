@@ -6,10 +6,6 @@ export default function BackToTop() {
   const [visible, setVisible] = useState(false);
   const location = useLocation();
 
-  if (location.pathname === '/apply') {
-    return null;
-  }
-
   useEffect(() => {
     const toggleVisible = () => {
       const scrolled = document.documentElement.scrollTop;
@@ -29,6 +25,10 @@ export default function BackToTop() {
       behavior: 'smooth'
     });
   };
+
+  if (location.pathname === '/apply') {
+    return null;
+  }
 
   return (
     <button 

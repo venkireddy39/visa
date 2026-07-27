@@ -51,11 +51,15 @@ export default function Navbar() {
   }, [location.pathname]);
 
   useEffect(() => {
-    document.body.classList.add('has-bottom-search');
+    if (!location.pathname.startsWith('/apply')) {
+      document.body.classList.add('has-bottom-search');
+    } else {
+      document.body.classList.remove('has-bottom-search');
+    }
     return () => {
       document.body.classList.remove('has-bottom-search');
     };
-  }, []);
+  }, [location.pathname]);
 
   const handleLinkClick = () => {
     setMobileOpen(false);
@@ -79,8 +83,8 @@ export default function Navbar() {
           </div>
         </div>
 
-        <nav className={mobileOpen ? 'mobile-active' : ''}>
-          {location.pathname !== '/apply' && (
+        {!location.pathname.startsWith('/apply') && (
+          <nav className={mobileOpen ? 'mobile-active' : ''}>
             <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''} ${hideSearch ? 'search-hidden' : ''}`}>
               <div className="nav-search-bar">
                 <FaSearch className="search-icon" />
@@ -94,8 +98,8 @@ export default function Navbar() {
                 />
               </div>
             </div>
-          )}
-        </nav>
+          </nav>
+        )}
 
         <div className="nav-logo-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <Link to="/" onClick={handleLinkClick} className="nav-home-link" title="Home">
