@@ -80,19 +80,21 @@ export default function Navbar() {
         </div>
 
         <nav className={mobileOpen ? 'mobile-active' : ''}>
-          <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''} ${hideSearch ? 'search-hidden' : ''}`}>
-            <div className="nav-search-bar">
-              <FaSearch className="search-icon" />
-              <input
-                type="text"
-                placeholder="Search destination country..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="nav-search-input"
-                autoComplete="off"
-              />
+          {location.pathname !== '/apply' && (
+            <div className={`nav-search-container ${mobileOpen ? 'mobile-open' : ''} ${hideSearch ? 'search-hidden' : ''}`}>
+              <div className="nav-search-bar">
+                <FaSearch className="search-icon" />
+                <input
+                  type="text"
+                  placeholder="Search destination country..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="nav-search-input"
+                  autoComplete="off"
+                />
+              </div>
             </div>
-          </div>
+          )}
         </nav>
 
         <div className="nav-logo-right" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>

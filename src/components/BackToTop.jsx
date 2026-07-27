@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { FaArrowUp } from 'react-icons/fa';
 
 export default function BackToTop() {
   const [visible, setVisible] = useState(false);
+  const location = useLocation();
+
+  if (location.pathname === '/apply') {
+    return null;
+  }
 
   useEffect(() => {
     const toggleVisible = () => {

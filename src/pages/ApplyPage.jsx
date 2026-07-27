@@ -633,7 +633,6 @@ export default function ApplyPage() {
             <div className="single-form-submit-bar">
               <button type="submit" className="apply-pay-btn submit-bar-btn" disabled={submitting}>
                 {submitting ? 'Processing…' : 'Submit Application'}
-                {!submitting && <FaArrowRight style={{ marginLeft: '10px' }} />}
               </button>
             </div>
 
